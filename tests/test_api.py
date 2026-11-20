@@ -35,6 +35,8 @@ def test_pages_and_health(client):
     h = client.get("/api/health").json()
     assert h["ok"] and h["projects"] == 38 and h["villas"] == 245 and h["index"]["documents"] == 306
     assert client.get("/static/app.js").status_code == 200
+    assert "/static/app.js?v=" in r.text and "/static/style.css?v=" in r.text  # cache-busted asset URLs
+    assert r.headers["cache-control"] == "no-cache" and client.get("/static/app.js").headers["cache-control"] == "no-cache"
 
 
 def test_security_headers(client):

@@ -114,8 +114,12 @@ class SecurityMiddleware:
             if message["type"] == "http.response.start":
                 headers = [h for h in message.get("headers", []) if h[0].lower() != b"server"]
                 headers += SECURITY_HEADERS
-                if scope.get("path", "").startswith("/api/"):
+                path = scope.get("path", "")
+                if path.startswith("/api/"):
                     headers.append((b"cache-control", b"no-store"))
+                elif path == "/" or path.startswith("/static/"):
+                    # Revalidate on every load (cheap 304 via ETag) so a deploy reaches browsers at once.
+                    headers.append((b"cache-control", b"no-cache"))
                 message["headers"] = headers
             await send(message)
 

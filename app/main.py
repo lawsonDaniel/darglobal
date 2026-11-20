@@ -1,6 +1,7 @@
 """FastAPI app: chat page, /api/chat, /api/health."""
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import re
@@ -10,7 +11,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
+from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -32,6 +33,15 @@ class ChatIn(BaseModel):
 
 class ResetIn(BaseModel):
     session_id: str | None = Field(None, max_length=64)
+
+
+def index_html() -> str:
+    """index.html with a content hash on each asset URL, so a new deploy never runs a cached old script."""
+    html = (STATIC / "index.html").read_text()
+    for name in ("app.js", "style.css"):
+        digest = hashlib.sha256((STATIC / name).read_bytes()).hexdigest()[:12]
+        html = html.replace(f"/static/{name}\"", f"/static/{name}?v={digest}\"")
+    return html
 
 
 def create_app() -> FastAPI:
@@ -63,7 +73,7 @@ def create_app() -> FastAPI:
 
     @app.get("/", include_in_schema=False)
     def index():
-        return FileResponse(STATIC / "index.html")
+        return HTMLResponse(index_html())
 
     @app.get("/api/health")
     def health():
