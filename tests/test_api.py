@@ -14,7 +14,14 @@ def client(monkeypatch):
         seen.append([dict(m) for m in history])
         return agent.Result(reply=f"answer {len(history)}", mode="agent", model="fake",
                             tools_used=[{"tool": "search_knowledge", "args": {}}], sources=[], checks={})
+    async def fake_stream(history, engine=None):
+        seen.append([dict(m) for m in history])
+        yield "status", "Searching DarGlobal projects"
+        yield "draft", "partial "
+        yield "done", agent.Result(reply=f"streamed {len(history)}", mode="agent", model="fake",
+                                   tools_used=[], sources=["https://darglobal.co.uk"], checks={})
     monkeypatch.setattr(agent, "answer", fake_answer)
+    monkeypatch.setattr(agent, "answer_stream", fake_stream)
     app = main.create_app()
     with TestClient(app) as c:
         c.seen = seen
@@ -108,3 +115,34 @@ def test_errors_are_generic(client, monkeypatch):
     monkeypatch.setattr(agent, "answer", boom)
     r = client.post("/api/chat", json={"message": "hi"})
     assert r.status_code == 503 and "secret" not in r.text
+
+
+def sse_events(text: str) -> list[tuple[str, dict]]:
+    import json
+    out = []
+    for block in text.strip().split("\n\n"):
+        lines = dict(line.split(": ", 1) for line in block.split("\n"))
+        out.append((lines["event"], json.loads(lines["data"])))
+    return out
+
+
+def test_stream_endpoint_events_and_history(client):
+    r = client.post("/api/chat/stream", json={"message": "oman projects"})
+    assert r.status_code == 200 and r.headers["content-type"].startswith("text/event-stream")
+    assert r.headers["cache-control"] == "no-store"
+    ev = sse_events(r.text)
+    assert [k for k, _ in ev] == ["start", "status", "draft", "done"]
+    sid = ev[0][1]["session_id"]
+    assert ev[-1][1]["reply"] == "streamed 1" and ev[-1][1]["session_id"] == sid
+    ev2 = sse_events(client.post("/api/chat/stream", json={"message": "and more", "session_id": sid}).text)
+    assert ev2[-1][1]["reply"] == "streamed 3"  # history kept on the server: user, assistant, user
+    assert client.seen[-1][1] == {"role": "assistant", "content": "streamed 1"}
+
+
+def test_stream_endpoint_reports_busy_models(client, monkeypatch):
+    async def down(history, engine=None):
+        raise agent.BusyError("timeout")
+        yield  # pragma: no cover
+    monkeypatch.setattr(agent, "answer_stream", down)
+    ev = sse_events(client.post("/api/chat/stream", json={"message": "hi"}).text)
+    assert ev[-1][0] == "error" and "busy" in ev[-1][1]["error"]

@@ -1,6 +1,7 @@
 """FastAPI app: chat page, /api/chat, /api/health."""
 from __future__ import annotations
 
+import json
 import logging
 import re
 import time
@@ -9,7 +10,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -75,8 +76,8 @@ def create_app() -> FastAPI:
         app.state.sessions.reset(body.session_id)
         return {"ok": True}
 
-    @app.post("/api/chat")
-    async def chat(body: ChatIn, request: Request):
+    def prepare(body: ChatIn, request: Request):
+        """Shared checks for both chat endpoints: rate limit, clean text, load the session."""
         ip = client_ip({k.lower(): v for k, v in request.headers.items()}, request.client.host if request.client else None)
         refused = app.state.limiter.check(ip)
         if refused:
@@ -86,28 +87,78 @@ def create_app() -> FastAPI:
             return JSONResponse({"error": "Please type a question."}, status_code=422)
         sid, history = app.state.sessions.get(body.session_id)
         history.append({"role": "user", "content": text})
-        if not await app.state.gate.acquire():
-            return JSONResponse({"error": "The assistant is busy. Please try again shortly.", "session_id": sid},
-                                status_code=503)
-        t0 = time.time()
-        try:
-            res = await agent.answer(history)
-        except agent.ConfigError:
-            log.error("chat: model not configured or key rejected")
-            return JSONResponse({"error": "The AI model is not configured on this server.", "session_id": sid},
-                                status_code=503)
-        except agent.BusyError as e:
-            log.warning("chat: all models failed (%s) ip=%s", e, ip_tag(ip))
-            return JSONResponse({"error": "The free AI models are busy or rate-limited right now. Please try again in a minute.",
-                                 "session_id": sid}, status_code=503)
-        finally:
-            app.state.gate.release()
+        return ip, sid, history
+
+    def finish(ip: str, sid: str, history: list[dict], res: agent.Result, t0: float) -> dict:
         history.append({"role": "assistant", "content": res.reply})
         app.state.sessions.save(sid, history)
         log.info("chat ip=%s mode=%s model=%s tools=%d checks=%s %.1fs", ip_tag(ip), res.mode, res.model,
                  len(res.tools_used), res.checks, time.time() - t0)
         return {"session_id": sid, "reply": res.reply, "sources": res.sources, "mode": res.mode, "model": res.model,
                 "tools_used": [t["tool"] for t in res.tools_used], "checks": res.checks}
+
+    BUSY = "The assistant is busy. Please try again shortly."
+    NOT_CONFIGURED = "The AI model is not configured on this server."
+    MODELS_BUSY = "The free AI models are busy or rate-limited right now. Please try again in a minute."
+
+    @app.post("/api/chat")
+    async def chat(body: ChatIn, request: Request):
+        ready = prepare(body, request)
+        if isinstance(ready, JSONResponse):
+            return ready
+        ip, sid, history = ready
+        if not await app.state.gate.acquire():
+            return JSONResponse({"error": BUSY, "session_id": sid}, status_code=503)
+        t0 = time.time()
+        try:
+            res = await agent.answer(history)
+        except agent.ConfigError:
+            log.error("chat: model not configured or key rejected")
+            return JSONResponse({"error": NOT_CONFIGURED, "session_id": sid}, status_code=503)
+        except agent.BusyError as e:
+            log.warning("chat: all models failed (%s) ip=%s", e, ip_tag(ip))
+            return JSONResponse({"error": MODELS_BUSY, "session_id": sid}, status_code=503)
+        finally:
+            app.state.gate.release()
+        return finish(ip, sid, history, res, t0)
+
+    @app.post("/api/chat/stream")
+    async def chat_stream(body: ChatIn, request: Request):
+        """Server-Sent Events: start, status*, draft*, then done (the checked reply) or error."""
+        ready = prepare(body, request)
+        if isinstance(ready, JSONResponse):
+            return ready
+        ip, sid, history = ready
+
+        def sse(event: str, data: dict) -> str:
+            return f"event: {event}\ndata: {json.dumps(data, ensure_ascii=False)}\n\n"
+
+        async def events():
+            yield sse("start", {"session_id": sid})
+            if not await app.state.gate.acquire():
+                yield sse("error", {"error": BUSY})
+                return
+            t0 = time.time()
+            try:
+                async for kind, data in agent.answer_stream(history):
+                    if kind == "done":
+                        yield sse("done", finish(ip, sid, history, data, t0))
+                    else:
+                        yield sse(kind, {"text": data})
+            except agent.ConfigError:
+                log.error("chat: model not configured or key rejected")
+                yield sse("error", {"error": NOT_CONFIGURED})
+            except agent.BusyError as e:
+                log.warning("chat: all models failed (%s) ip=%s", e, ip_tag(ip))
+                yield sse("error", {"error": MODELS_BUSY})
+            except Exception:
+                log.exception("chat stream failed")
+                yield sse("error", {"error": "Something went wrong. Please try again."})
+            finally:
+                app.state.gate.release()
+
+        return StreamingResponse(events(), media_type="text/event-stream",
+                                 headers={"X-Accel-Buffering": "no"})
 
     return app
 

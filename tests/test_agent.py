@@ -124,3 +124,45 @@ async def test_all_models_down_is_busy():
     eng, _ = engine_for(lambda req, body, n: httpx.Response(503, json={"error": {"message": "down", "code": 503}}))
     with pytest.raises(agent.BusyError):
         await agent.answer([{"role": "user", "content": "hi"}], engine=eng)
+
+
+def streamed(msg: dict, model: str = "fake/model") -> httpx.Response:
+    """The same reply as completion(), sent as an OpenAI-style SSE stream in small pieces."""
+    base = {"id": "s1", "object": "chat.completion.chunk", "created": 0, "model": model}
+    chunks = []
+    if msg.get("tool_calls"):
+        tc = msg["tool_calls"][0]
+        chunks.append({"index": 0, "delta": {"role": "assistant", "tool_calls": [
+            {"index": 0, "id": tc["id"], "type": "function", "function": {"name": tc["function"]["name"], "arguments": ""}}]}})
+        chunks.append({"index": 0, "delta": {"tool_calls": [{"index": 0, "function": {"arguments": tc["function"]["arguments"]}}]}})
+        finish = "tool_calls"
+    else:
+        text = msg["content"]
+        chunks += [{"index": 0, "delta": {"content": text[i:i + 12]}} for i in range(0, len(text), 12)]
+        finish = "stop"
+    chunks.append({"index": 0, "delta": {}, "finish_reason": finish})
+    body = "".join(f"data: {json.dumps({**base, 'choices': [c]})}\n\n" for c in chunks) + "data: [DONE]\n\n"
+    return httpx.Response(200, headers={"content-type": "text/event-stream"}, content=body.encode())
+
+
+async def test_stream_drafts_are_checked_and_done_is_final():
+    def handler(req, body, n):
+        reply = completion if not body.get("stream") else streamed
+        last = body["messages"][-1]
+        if last["role"] == "user":
+            return reply(tool_call("search_wasalt_villas", {"city": "Jeddah", "max_price": 1000000, "limit": 2}))
+        v = json.loads(last["content"])["listings"][0]
+        return reply({"role": "assistant", "content":
+                      f"Cheapest: SAR {v['price_sar']:,}\n{v['url']} and https://fake.example/x call 0551234567 now\nSource: Wasalt.sa"})
+    eng, _ = engine_for(handler)
+    events = [e async for e in agent.answer_stream([{"role": "user", "content": "cheapest Jeddah villa under 1M?"}], engine=eng)]
+    kinds = [k for k, _ in events]
+    assert kinds[0] == "status" and kinds[-1] == "done" and "draft" in kinds
+    assert ("status", "Searching Wasalt villa listings") in events
+    for k, text in events:
+        if k == "draft":  # unknown links and personal numbers never reach the browser, even mid-stream
+            assert "fake.example" not in text and "0551234567" not in text
+    res = events[-1][1]
+    assert res.mode == "agent" and "SAR 950,000" in res.reply and "fake.example" not in res.reply
+    assert res.checks["links_removed"] == 1 and res.checks["phones_removed"] == 1
+    assert res.model == "fake/model"
