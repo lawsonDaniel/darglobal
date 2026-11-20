@@ -1,0 +1,16 @@
+services:
+  chatbot:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file: .env
+    environment:
+      TRUSTED_PROXY_HOPS: "0"   # no proxy in front when running locally
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    restart: unless-stopped

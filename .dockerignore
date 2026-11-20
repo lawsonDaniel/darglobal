@@ -1,0 +1,13 @@
+.venv
+.git
+.env
+.env.*
+**/__pycache__
+.pytest_cache
+data/raw
+data/index
+_to_delete
+scraper
+tests
+eval
+*.md

@@ -1,0 +1,74 @@
+[
+ {
+  "city": "Riyadh",
+  "results_on_wasalt": 10764,
+  "rows_collected": 28,
+  "median_price_sar": 2075000,
+  "median_sar_per_sqm": 6503,
+  "median_area_sqm": 307.2
+ },
+ {
+  "city": "Jeddah",
+  "results_on_wasalt": 2244,
+  "rows_collected": 27,
+  "median_price_sar": 1550000,
+  "median_sar_per_sqm": 5000,
+  "median_area_sqm": 305.2
+ },
+ {
+  "city": "Khobar",
+  "results_on_wasalt": 1510,
+  "rows_collected": 25,
+  "median_price_sar": 1300000,
+  "median_sar_per_sqm": 3634,
+  "median_area_sqm": 375
+ },
+ {
+  "city": "Dammam",
+  "results_on_wasalt": 1092,
+  "rows_collected": 30,
+  "median_price_sar": 1320000,
+  "median_sar_per_sqm": 4436,
+  "median_area_sqm": 299.8
+ },
+ {
+  "city": "Mecca",
+  "results_on_wasalt": 513,
+  "rows_collected": 29,
+  "median_price_sar": 1300000,
+  "median_sar_per_sqm": 3131,
+  "median_area_sqm": 424
+ },
+ {
+  "city": "Medina",
+  "results_on_wasalt": 170,
+  "rows_collected": 25,
+  "median_price_sar": 1850000,
+  "median_sar_per_sqm": 4478,
+  "median_area_sqm": 412.5
+ },
+ {
+  "city": "Khamis Mushait",
+  "results_on_wasalt": 131,
+  "rows_collected": 30,
+  "median_price_sar": 992500,
+  "median_sar_per_sqm": 2374,
+  "median_area_sqm": 378.8
+ },
+ {
+  "city": "Buraidah",
+  "results_on_wasalt": 118,
+  "rows_collected": 27,
+  "median_price_sar": 790000,
+  "median_sar_per_sqm": 2395,
+  "median_area_sqm": 374
+ },
+ {
+  "city": "Jazan",
+  "results_on_wasalt": 76,
+  "rows_collected": 24,
+  "median_price_sar": 1100000,
+  "median_sar_per_sqm": 2831,
+  "median_area_sqm": 397.7
+ }
+]

@@ -1,0 +1,40 @@
+{
+ "checked": "18-19 Nov 2026",
+ "name": "DarGlobal",
+ "description": "DarGlobal is a premier international luxury real estate investment and development platform specialising in architecturally distinctive, design-led residences in the world's most sought-after destinations.",
+ "description_source": "https://darglobal.co.uk/ (page description)",
+ "stock_listing": "London Stock Exchange (stated on https://darglobal.co.uk/about and https://darglobal.co.uk/investor)",
+ "countries_with_projects": ["United Arab Emirates", "Oman", "Qatar", "Saudi Arabia", "Spain", "United Kingdom"],
+ "brand_partners": [
+  {"name": "Aston Martin", "url": "https://darglobal.co.uk/partners/aston-martin"},
+  {"name": "Elie Saab", "url": "https://darglobal.co.uk/partners/elie-saab"},
+  {"name": "Fendi Casa", "url": "https://darglobal.co.uk/partners/fendi-casa"},
+  {"name": "Automobili Lamborghini", "url": "https://darglobal.co.uk/partners/lamborghini"},
+  {"name": "Marriott Residences (AIDA, Oman)", "url": "https://darglobal.co.uk/partners/marriott-residences-aida-oman"},
+  {"name": "Missoni", "url": "https://darglobal.co.uk/partners/missoni"},
+  {"name": "Mouawad", "url": "https://darglobal.co.uk/partners/mouawad"},
+  {"name": "Pagani", "url": "https://darglobal.co.uk/partners/pagani"},
+  {"name": "The Trump Organization", "url": "https://darglobal.co.uk/partners/the-trump-organization"},
+  {"name": "W Hotels", "url": "https://darglobal.co.uk/partners/w-hotels"},
+  {"name": "Paramount", "url": "https://darglobal.co.uk/partners/paramount"}
+ ],
+ "recent_press": {
+  "note": "Headlines linked from the home page on 19 Nov 2026. Titles are read from the page addresses; open the link (or use web search) for dates and details.",
+  "items": [
+   {"title": "Dar Global expands Saudi Arabia portfolio with new Jeddah development valued at SAR 1 billion", "url": "https://darglobal.co.uk/press/dar-global-expands-saudi-arabia-portfolio-with-new-jeddah-development-valued-at-sar-1-billion"},
+   {"title": "Dar Global Capital Partners targets high-value real estate opportunities in Dubai", "url": "https://darglobal.co.uk/press/dar-global-capital-partners-targets-high-value-real-estate-opportunities-dubai"},
+   {"title": "Dar Global opens sales of Trump Villas in Simaisma, Qatar, to unprecedented interest", "url": "https://darglobal.co.uk/press/dar-global-opens-sales-trump-villas-simaisma-qatar-unprecedented-interest"},
+   {"title": "Dar Global delivers 66 percent revenue growth in HY 2026; portfolio GDV reaches 23 billion", "url": "https://darglobal.co.uk/press/dar-global-delivers-66-percent-revenue-growth-hy-2026-portfolio-gdv-reaches-23-billion"},
+   {"title": "Dar Global appoints Gulf Asia Contracting for Trump International Hotel & Tower Dubai", "url": "https://darglobal.co.uk/press/dar-global-appoints-gulf-asia-contracting-for-trump-international-hotel-tower-dubai"},
+   {"title": "DarGlobal and Fendi Casa announce Azure Oceanfront Villas, Oman", "url": "https://darglobal.co.uk/press/darglobal-fendi-casa-announce-azure-oceanfront-villas-oman"}
+  ]
+ },
+ "other_pages": {
+  "luxury_golf_communities": "https://darglobal.co.uk/luxury-golf-communities",
+  "hospitality": "https://darglobal.co.uk/hospitality",
+  "exclusive_membership": "https://darglobal.co.uk/exclusive-membership",
+  "commercial": "https://darglobal.co.uk/commercial",
+  "tokenization": "https://darglobal.co.uk/tokenization",
+  "why_invest": "https://darglobal.co.uk/why-invest"
+ }
+}

@@ -1,0 +1,41 @@
+{
+ "checked": "19 Nov 2026",
+ "darglobal": {
+  "company": "DarGlobal (Dar Global PLC), listed on the London Stock Exchange",
+  "website": "https://darglobal.co.uk",
+  "whatsapp": {
+   "number": "+971 800 40409",
+   "link": "https://api.whatsapp.com/send?phone=97180040409",
+   "note": "The 'Chat with us on WhatsApp' link on every DarGlobal page, shown to visitors from the UAE, Saudi Arabia, the UK and the US."
+  },
+  "phone": {
+   "number": "+1 212 715 1067",
+   "note": "The 'Call' number the site shows to visitors from the US. Visitors from the UAE, Saudi Arabia and the UK were shown no phone number."
+  },
+  "register_interest": "Every DarGlobal page has a 'Register Interest' form for enquiries about a project.",
+  "social": {"x_twitter": "https://x.com/dar_global"},
+  "pages": {
+   "projects": "https://darglobal.co.uk/projects",
+   "about": "https://darglobal.co.uk/about",
+   "investor": "https://darglobal.co.uk/investor",
+   "press": "https://darglobal.co.uk/press",
+   "terms": "https://darglobal.co.uk/terms-conditions"
+  },
+  "not_found": "No email address or office address appeared on the home, about or investor pages, and /contact and /contact-us return 404."
+ },
+ "wasalt": {
+  "company": "Wasalt, Saudi real estate platform",
+  "website": "https://wasalt.sa",
+  "customer_service": {
+   "number": "8001233227",
+   "note": "Toll-free contact number Wasalt publishes in https://wasalt.sa/llms.txt."
+  },
+  "listing_contact": "To reach the advertiser of a listing, open the listing's URL on wasalt.sa and use its call or WhatsApp buttons there.",
+  "why_no_agent_numbers": "Wasalt's AI policy disallows extracting phone numbers, WhatsApp links or contact details of listings, so this assistant stores none.",
+  "policies": {
+   "llms_txt": "https://wasalt.sa/llms.txt",
+   "terms_of_use": "https://wasalt.sa/en/s/terms-of-use",
+   "privacy_policy": "https://wasalt.sa/en/s/privacy-policy"
+  }
+ }
+}

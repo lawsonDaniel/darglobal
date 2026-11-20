@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: darglobal-assistant
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: OPENROUTER_MODELS
+        value: nvidia/nemotron-3-ultra-550b-a55b:free,nvidia/nemotron-3.5-super-vl:free,openrouter/free
+      - key: TAVILY_API_KEY
+        sync: false
+      - key: FIRECRAWL_API_KEY
+        sync: false
+      - key: APP_URL
+        sync: false
+      - key: TRUSTED_PROXY_HOPS
+        value: "1"
+      - key: PORT
+        value: "8000"

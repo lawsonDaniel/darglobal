@@ -1,0 +1,12 @@
+{
+ "collected": "18-19 Nov 2026",
+ "method": "Firecrawl page reads of public pages (DarGlobal project pages; first results page of Wasalt villas-for-sale per city)",
+ "wasalt_attribution": "Source: Wasalt.sa",
+ "currency": "SAR",
+ "notes": [
+  "Wasalt rows are the first results page per city (newest first), a sample, not the full market.",
+  "DarGlobal pages show no prices or payment plans.",
+  "No phone numbers, WhatsApp links or other contact details of Wasalt agents or owners were collected (Wasalt policy). Company contact details for DarGlobal and Wasalt are in contacts.json.",
+  "Prices and availability change; check the live listing before relying on any figure."
+ ]
+}

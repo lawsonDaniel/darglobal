@@ -1,0 +1,42 @@
+[
+ {
+  "id": "100583",
+  "name_ar": "مشروع ستة أميال - أدوار للبيع",
+  "name_en": "Six Miles project (floors for sale)",
+  "types_ar": "دور, فيلا",
+  "location_ar": "الفاروق، مركز، الرياض",
+  "city": "Riyadh",
+  "price_from_sar": 750000,
+  "url": "https://wasalt.sa/project/الرياض/مشروع-ستة-أميال-أدوار-للبيع-100583"
+ },
+ {
+  "id": "100159",
+  "name_ar": "مشروع فلل إتوال",
+  "name_en": "Etoile villas project",
+  "types_ar": "فيلا",
+  "location_ar": "مطار الملك خالد الدولي، شمال، الرياض",
+  "city": "Riyadh",
+  "price_from_sar": 4200000,
+  "url": "https://wasalt.sa/project/الرياض/مشروع-فلل-إتوال-100159"
+ },
+ {
+  "id": "100319",
+  "name_ar": "سديم تاون فلل",
+  "name_en": "Sadeem Town villas",
+  "types_ar": "فيلا",
+  "location_ar": "الصفاء، مركز، الرياض",
+  "city": "Riyadh",
+  "price_from_sar": 2290000,
+  "url": "https://wasalt.sa/project/الرياض/سديم-تاون-فلل-100319"
+ },
+ {
+  "id": "100246",
+  "name_ar": "مشروع نبتون بتصاميم من معوض - فلل للبيع",
+  "name_en": "Neptune villas, designs by Mouawad",
+  "types_ar": "فيلا",
+  "location_ar": "سدرة، الرياض",
+  "city": "Riyadh",
+  "price_from_sar": 4280000,
+  "url": "https://wasalt.sa/project/الرياض/مشروع-نبتون-بتصاميم-من-معوض-فلل-للبيع-100246"
+ }
+]
