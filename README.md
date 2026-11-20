@@ -2,7 +2,7 @@
 
 An AI chatbot for **DarGlobal's 38 projects** and **villas for sale in nine Saudi cities on Wasalt.sa**, built on public data collected for this assignment. It uses a **LangChain agent** on free OpenRouter models, a **vector index** of all the data, checks every answer against the data before showing it, and is packaged with Docker.
 
-- **Live URL:** `<add after deploying>`
+- **Live URL:** https://darglobal-production-7f7e890b.up.railway.app
 - **Stack:** Python 3.13, LangChain 1.5 (`create_agent` + middleware), FastAPI, WordLlama embeddings, BM25, Docker
 - **Model:** `nvidia/nemotron-3-ultra-550b-a55b:free` on OpenRouter, falling back to `nvidia/nemotron-3.5-super-vl:free`, then `openrouter/free`
 - **Audit of the first version and fixes:** [AUDIT.md](AUDIT.md)
